@@ -14,7 +14,11 @@ require 'rake'
 require 'standalone_migrations'
 StandaloneMigrations::Tasks.load_tasks
 
-# require 'tasks/standalone_migrations'
+config = YAML::load(File.open('./db/config.yml'))
+ActiveRecord::Base.establish_connection(config[:development])
+
+=begin
+require 'tasks/standalone_migrations'
 StandaloneMigrations::Configurator.environments_config do |env|
   env.on "production" do
     if (ENV['DATABASE_URL'])
@@ -31,6 +35,7 @@ StandaloneMigrations::Configurator.environments_config do |env|
     nil
   end
 end
+=end
 
 begin
   require "rspec/core"
