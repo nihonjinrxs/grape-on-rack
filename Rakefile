@@ -32,12 +32,15 @@ StandaloneMigrations::Configurator.environments_config do |env|
   end
 end
 
-require 'rspec/core'
-require 'rspec/core/rake_task'
+begin
+  require "rspec/core"
+  require "rspec/core/rake_task"
 
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  # do not run integration tests, doesn't work on TravisCI
-  spec.pattern = FileList['spec/api/*_spec.rb']
+  RSpec::Core::RakeTask.new(:spec) do |spec|
+    # do not run integration tests, doesn't work on TravisCI
+    spec.pattern = FileList['spec/api/*_spec.rb']
+  end
+rescue LoadError
 end
 
 task :default => :spec

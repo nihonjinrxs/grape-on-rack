@@ -6,7 +6,6 @@ gem "json", "~> 1.7.6"
 gem "newrelic_rpm", "~> 3.5.4.34"
 gem "newrelic-grape", "~> 1.1.0"
 gem "sqlite3", "~> 1.3.7"
-# gem "activerecord", "~> 3.2.11"
 gem "standalone_migrations", "~> 2.0.3"
 
 group :development do
