@@ -16,6 +16,16 @@ group :development do
   gem "guard-rack", "~> 1.2.2"
 end
 
+group :development, :test do
+  gem "rspec", "~> 2.12.0"
+  gem "rack-test", "~> 0.6.2"
+  gem "rspec-core", "~> 2.12.2"
+  gem "rspec-expectations", "~> 2.12.1"
+  gem "rspec-mocks", "~> 2.12.1"
+  gem "capybara", "~> 2.0.2"
+  gem "factory_girl_rails", "~> 4.1.0"
+end
+
 group :test do
   gem "rspec", "~> 2.12.0"
   gem "rack-test", "~> 0.6.2"
@@ -24,6 +34,7 @@ group :test do
   gem "rspec-mocks", "~> 2.12.1"
   gem "capybara", "~> 2.0.2"
   gem "nokogiri", "~> 1.5.6"
+  gem "faker", "~> 1.1.2"
 end
 
 
