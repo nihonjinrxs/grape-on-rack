@@ -152,6 +152,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord (~> 3.2.11)
   capybara (~> 2.0.2)
   grape!
   guard (~> 1.6.1)
