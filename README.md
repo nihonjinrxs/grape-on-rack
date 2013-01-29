@@ -1,7 +1,9 @@
 Grape API on Rack
 =================
 
-[![Build Status](https://secure.travis-ci.org/dblock/grape-on-rack.png)](http://travis-ci.org/dblock/grape-on-rack)
+[![Build Status:fork origin](https://secure.travis-ci.org/dblock/grape-on-rack.png)](http://travis-ci.org/dblock/grape-on-rack)
+[![Build Status:master](https://travis-ci.org/nihonjinrxs/grape-on-rack.png?branch=master)](https://travis-ci.org/nihonjinrxs/grape-on-rack)
+[![Build Status:activerecord-migrations](https://travis-ci.org/nihonjinrxs/grape-on-rack.png?branch=activerecord-migrations)](https://travis-ci.org/nihonjinrxs/grape-on-rack?branch=activerecord-migrations)
 
 A [Grape](http://github.com/intridea/grape) API mounted on Rack.
 

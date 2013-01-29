@@ -13,6 +13,11 @@ GIT
       rack-mount
       virtus
 
+GIT
+  remote: https://github.com/nihonjinrxs/rpm.git
+  revision: ffd0c78aae99ddc72895b77066cff9bef818ca28
+  specs:
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -169,7 +174,7 @@ DEPENDENCIES
   guard-rack (~> 1.2.2)
   json (~> 1.7.6)
   newrelic-grape (~> 1.1.0)
-  newrelic_rpm (~> 3.5.4.34)
+  newrelic_rpm!
   nokogiri (~> 1.5.6)
   rack (~> 1.4.1)
   rack-test (~> 0.6.2)
