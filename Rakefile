@@ -12,6 +12,8 @@ end
 
 require 'rake'
 
+ENV['RACK_ENV'] ||= "test"
+
 logger = Logger.new('log/rake_tasks.log', 10, 2048000)
 logger.level = Logger::DEBUG
 logger.info "Logger created at log/rake_tasks.log"
@@ -22,6 +24,8 @@ logger.info "StandaloneMigrations::Tasks.load_tasks completed"
 
 config = YAML::load(File.open('./db/config.yml'))
 logger.debug "config = #{config.to_s}"
+ActiveRecord::Base.establish_connection(config[ENV['RACK_ENV']])
+logger.info "ActiveRecord::Base.establish_connection -- connection established to #{config[ENV['RACK_ENV']]}"
 
 =begin
 require 'tasks/standalone_migrations'
@@ -43,9 +47,6 @@ StandaloneMigrations::Configurator.environments_config do |env|
 end
 =end
 logger.info "Skipped custom database config necessary for Heroku deployment (temporarily)"
-
-ActiveRecord::Base.establish_connection(config["development"])
-logger.info "ActiveRecord::Base.establish_connection -- connection established to #{config['development']}"
 
 begin
   require "rspec/core"
