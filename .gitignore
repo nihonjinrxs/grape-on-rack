@@ -3,4 +3,4 @@
 .redcar
 .irbrc
 .bundle
-log
+log/*.log
