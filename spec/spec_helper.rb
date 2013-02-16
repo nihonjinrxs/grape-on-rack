@@ -40,3 +40,9 @@ Capybara.configure do |config|
   config.server_port = 9293
   logger.info "  config.server_port = 9293 (set)"
 end
+
+RSpec::Matchers.define :be_in do |collection|
+  match do |value|
+    collection.include? value
+  end
+end

@@ -18,22 +18,25 @@ describe Acme::API do
       logger.debug "***** Testing 'POST with name=John' *****"
       post "/api/v6/users?name=John"
       logger.debug "POST test\nlast_response = #{last_response.to_json}"
-      last_response.status.should == 201
-      logger.debug "POST test\nlast_response.body = #{last_response.body}"
-      logger.debug "POST test\nlast_response.body['id'] = #{last_response.body['id']}"
-      logger.debug "POST test\nlast_response.body['name'] = #{last_response.body['name']}"
-      last_response.body["id"].should exist
-      @test_id = last_response.body.first[:id]
+      last_response.status.should be_in [200, 201, 202]
+      _body = JSON.parse(last_response.body)
+      logger.debug "POST test\nlast_response.body = #{last_response.body.to_json}"
+      logger.debug "POST test\nlast_response.body['id'] = #{_body['id']}"
+      logger.debug "POST test\nlast_response.body['name'] = #{_body['name']}"
+      _body.should have_key "id"
+      _body['id'].should be_a_kind_of(Numeric)
+      @test_id = _body['id']
       logger.debug "  -> @test_id = #{@test_id}"
-      last_response.body["name"].should == "John"
-      last_response.body["status"].should == "created"
+      _body['name'].should == "John"
+      _body['status'].should == "created"
     end
 
     it "GET with id" do
       logger.debug "***** Testing 'GET with id' *****"
       get "/api/v6/users/#{@test_id}"
       logger.debug "GET :id test\nlast_response = #{last_response.to_json}\n@test_id = #{@test_id}"
-      last_response.status.should == 201
+      last_response.status.should be_in [200, 201, 202]
+      _body = JSON.parse(last_response.body)
       last_response.body.should == [{ :id => @test_id, :name => "John" }.to_json]
     end
 

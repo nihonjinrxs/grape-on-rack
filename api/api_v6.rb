@@ -15,6 +15,7 @@ module Acme
         optional :limit, type: Integer, desc: "The number of users to return"
       end
       get do
+        logger.debug { "GET /api/v6/users with params = #{params}" }
         response_limit = params[:limit] || 20
         response_json = { :body => [] }
         users = User.order("name").limit(response_limit)
@@ -49,9 +50,9 @@ module Acme
       end
       get ':id' do
         logger.debug { "GET /api/v6/users/:id with :id=#{params[:id]}" }
-        @user = User.find params[:id]
+        @user = User.find_by_id params[:id]
         logger.debug { "User found: name = #{@user.name}" }
-        { :name => @user.name }
+        { :id => @user.id, :name => @user.name }
       end
 
       # DELETE /api/v6/users/:id
