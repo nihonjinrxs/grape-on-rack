@@ -3,7 +3,7 @@ module Acme
     @@rang = 0
     version 'v3', :using => :path, :vendor => 'acme', :format => :json
     resource :system do
-      desc "Returns pong."
+      desc 'Returns pong.'
       get :ring do
         { :rang => @@rang }
       end
@@ -12,7 +12,7 @@ module Acme
         { :rang => @@rang }
       end
       put :ring do
-        error!("missing :count", 400) unless params[:count]
+        error!('missing :count', 400) unless params[:count]
         @@rang += params[:count].to_i
         { :rang => @@rang }
       end

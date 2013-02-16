@@ -7,11 +7,11 @@ describe Acme::API do
     Acme::API
   end
     
-  context "v2" do
-    context "system" do
-      it "ping" do
-        get "/api/v2/system/zing"
-        last_response.body.should == { :zing => "zong" }.to_json
+  context 'v2' do
+    context 'system' do
+      it 'ping' do
+        get '/api/v2/system/zing'
+        last_response.body.should == { :zing => 'zong'}.to_json
       end
     end
   end

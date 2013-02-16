@@ -6,21 +6,21 @@ begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
   $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
+  $stderr.puts 'Run `bundle install` to install missing gems'
   exit e.status_code
 end
 
 require 'rake'
 
-ENV['RACK_ENV'] ||= "test"
+ENV['RACK_ENV'] ||= 'test'
 
 logger = Logger.new('log/rake_tasks.log', 10, 2048000)
 logger.level = Logger::DEBUG
-logger.info "Logger created at log/rake_tasks.log"
+logger.info 'Logger created at log/rake_tasks.log'
 
 require 'standalone_migrations'
 StandaloneMigrations::Tasks.load_tasks
-logger.info "StandaloneMigrations::Tasks.load_tasks completed"
+logger.info 'StandaloneMigrations::Tasks.load_tasks completed'
 
 config = YAML::load(File.open('./db/config.yml'))
 logger.debug "config = #{config.to_s}"
@@ -46,19 +46,19 @@ StandaloneMigrations::Configurator.environments_config do |env|
   end
 end
 =end
-logger.info "Skipped custom database config necessary for Heroku deployment (temporarily)"
+logger.info 'Skipped custom database config necessary for Heroku deployment (temporarily)'
 
 begin
-  require "rspec/core"
-  require "rspec/core/rake_task"
+  require 'rspec/core'
+  require 'rspec/core/rake_task'
 
   RSpec::Core::RakeTask.new(:spec) do |spec|
     # do not run integration tests, doesn't work on TravisCI
     spec.pattern = FileList['spec/api/*_spec.rb']
   end
-  logger.info "Loaded RSpec and created RakeTask :spec"
+  logger.info 'Loaded RSpec and created RakeTask :spec'
 rescue LoadError
-  logger.error "rspec/core or rspec/core/rake_task caused a LoadError"
+  logger.error 'rspec/core or rspec/core/rake_task caused a LoadError'
 end
 
 task :default => :spec
