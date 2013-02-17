@@ -44,15 +44,25 @@ describe Acme::API do
       logger.debug '***** Testing \'PUT with id and name=James\' *****'
       put "/api/v6/users/#{@test_id}?name=James"
       logger.debug "PUT :id test\nlast_response = #{last_response.to_json}\n@test_id = #{@test_id}"
-      last_response.status.should == 200
-      last_response.body.should == [{ :id => @test_id, :name => 'James', :status => 'updated'}.to_json]
+      last_response.status.should be_in [200, 201, 202]
+      _body = JSON.parse(last_response.body)
+      _body.should include Hash.new(:id => @test_id, :name => 'James', :status => 'updated')
     end
 
     it 'GET users' do
       logger.debug '***** Testing \'GET\' *****'
       get '/api/v6/users'
-      logger.debug "GET test\nlast_response = #{last_response.to_json}\n@test_id = #{@test_id}"
+      logger.debug "GET test\nlast_response = #{last_response.to_json}\n previous @test_id = #{@test_id}"
+      last_response.status.should be_in [200, 201, 202]
       last_response.body[:body][:body].should include({ :id => @test_id, :name => 'James'}.to_json)
+    end
+
+    it 'GET users with limit' do
+      logger.debug '***** Testing \'GET\' *****'
+      get '/api/v6/users/limit/5'
+      logger.debug "GET test\nlast_response = #{last_response.to_json}\n@test_id = #{@test_id}"
+      last_response.status.should be_in [200, 201, 202]
+      last_response.body[:body][:body].length.should == 5
     end
 
     it 'DELETE users with id' do

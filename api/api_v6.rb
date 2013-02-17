@@ -11,12 +11,26 @@ module Acme
     resource :users do
       # GET /api/v6/users
       desc 'Get the currently available users'
-      params do
-        optional :limit, type: Integer, desc: 'The number of users to return'
-      end
       get do
         logger.debug { "GET /api/v6/users with params = #{params}" }
-        response_limit = params[:limit] || 20
+        response_json = { :body => [] }
+        users = User.order('name').limit(20)
+        logger.debug { "users = #{users.to_s}"}
+        users.each do |user|
+          logger.debug { "GET /api/v6/users -- in loop with current user = #{user.to_s}" }
+          response_json[:body] << { :id => user.id, :name => user.name }
+        end
+        logger.debug "In API_v6#:users#get --> response_json = \"#{response_json.to_json}\" = \"#{response_json.to_s}\""
+        response_json.to_json
+      end
+
+      desc 'Get the first `n` currently available users'
+      params do
+        requires :limit, type: Integer, desc: 'The number of users to return'
+      end
+      get 'limit/:limit', :requirements => { :limit => /[0-9]*/ } do
+        logger.debug { "GET /api/v6/users/limit/:limit with params = #{params}" }
+        response_limit = params[:limit]
         response_json = { :body => [] }
         users = User.order('name').limit(response_limit)
         logger.debug { "users = #{users.to_s}"}
@@ -27,6 +41,7 @@ module Acme
         logger.debug "In API_v6#:users#get --> response_json = \"#{response_json.to_json}\" = \"#{response_json.to_s}\""
         response_json.to_json
       end
+
 
       # POST /api/v6/users { name = ... }
       desc 'Create a new user'
@@ -48,7 +63,7 @@ module Acme
       params do
         requires :id, type: Integer, desc: 'A user ID'
       end
-      get ':id' do
+      get ':id', :requirements => { :id => /[0-9]*/ } do
         logger.debug { "GET /api/v6/users/:id with :id=#{params[:id]}" }
         @user = User.find_by_id params[:id]
         logger.debug { "User found: name = #{@user.name}" }
