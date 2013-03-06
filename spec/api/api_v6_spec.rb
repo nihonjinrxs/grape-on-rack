@@ -10,13 +10,16 @@ describe Acme::API do
     Acme::API
   end
 
+  $test_id = nil
+
   logger.debug '*** Starting Acme::API testing ***'
   context 'v6' do
     logger.debug '***** In context v6 *****'
 
+    
     it 'POST with name=John' do
       logger.debug '***** Testing \'POST with name=John\' *****'
-      post '/api/v6/users?name=John'
+      post '/api/v6/user/new?name=John'
       logger.debug "POST test\nlast_response = #{last_response.to_json}"
       last_response.status.should be_in [200, 201, 202]
       _body = JSON.parse(last_response.body)
@@ -26,24 +29,27 @@ describe Acme::API do
       _body.should have_key 'id'
       _body['id'].should be_a_kind_of(Numeric)
       @test_id = _body['id']
-      logger.debug "  -> @test_id = #{@test_id}"
+      $test_id = @test_id
+      logger.debug "  -> @test_id = $test_id = #{$test_id}"
       _body['name'].should == 'John'
       _body['status'].should == 'created'
     end
 
     it 'GET with id' do
       logger.debug '***** Testing \'GET with id\' *****'
-      get "/api/v6/users/#{@test_id}"
-      logger.debug "GET :id test\nlast_response = #{last_response.to_json}\n@test_id = #{@test_id}"
+      logger.debug "Doing GET :id with id=#{$test_id}"
+      get "/api/v6/user/#{$test_id}"
+      logger.debug "GET :id test\nlast_response = #{last_response.to_json}\n$test_id = #{$test_id}"
       last_response.status.should be_in [200, 201, 202]
       _body = JSON.parse(last_response.body)
-      last_response.body.should == [{ :id => @test_id, :name => 'John'}.to_json]
+      logger.debug "_body = #{_body}"
+      last_response.body.should == { :id => $test_id, :name => 'John'}.to_json
     end
 
     it 'PUT with id and name=James' do
       logger.debug '***** Testing \'PUT with id and name=James\' *****'
-      put "/api/v6/users/#{@test_id}?name=James"
-      logger.debug "PUT :id test\nlast_response = #{last_response.to_json}\n@test_id = #{@test_id}"
+      put "/api/v6/user/#{$test_id}?name=James"
+      logger.debug "PUT :id test\nlast_response = #{last_response.to_json}\n$test_id = #{$test_id}"
       last_response.status.should be_in [200, 201, 202]
       _body = JSON.parse(last_response.body)
       _body.should include Hash.new(:id => @test_id, :name => 'James', :status => 'updated')
@@ -52,24 +58,24 @@ describe Acme::API do
     it 'GET users' do
       logger.debug '***** Testing \'GET\' *****'
       get '/api/v6/users'
-      logger.debug "GET test\nlast_response = #{last_response.to_json}\n previous @test_id = #{@test_id}"
+      logger.debug "GET test\nlast_response = #{last_response.to_json}\n previous $test_id = #{$test_id}"
       last_response.status.should be_in [200, 201, 202]
-      last_response.body[:body][:body].should include({ :id => @test_id, :name => 'James'}.to_json)
+      last_response.body[:body].should include({ :id => $test_id, :name => 'James'}.to_json)
     end
 
     it 'GET users with limit' do
       logger.debug '***** Testing \'GET\' *****'
-      get '/api/v6/users/limit/5'
-      logger.debug "GET test\nlast_response = #{last_response.to_json}\n@test_id = #{@test_id}"
+      get '/api/v6/users/5'
+      logger.debug "GET test\nlast_response = #{last_response.to_json}\n$test_id = #{$test_id}"
       last_response.status.should be_in [200, 201, 202]
       last_response.body[:body][:body].length.should == 5
     end
 
     it 'DELETE users with id' do
       logger.debug '***** Testing \'DELETE with id\' *****'
-      delete "/api/v6/users/#{@test_id}"
-      logger.debug "DELETE :id test\nlast_response = #{last_response.to_json}\n@test_id = #{@test_id}"
-      last_response.body.should == [{ :id => 1, :name => 'James', :status => 'destroyed'}.to_json]
+      delete "/api/v6/user/#{$test_id}"
+      logger.debug "DELETE :id test\nlast_response = #{last_response.to_json}\n$test_id = #{@test_id}"
+      last_response.body.should == [{ :id => $test_id, :name => 'James', :status => 'destroyed'}.to_json]
     end
 
     logger.debug '***** Leaving context v6 *****'

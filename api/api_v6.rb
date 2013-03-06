@@ -17,7 +17,7 @@ module Acme
         users = User.order('name').limit(20)
         logger.debug { "users = #{users.to_s}"}
         users.each do |user|
-          logger.debug { "GET /api/v6/users -- in loop with current user = #{user.to_s}" }
+          logger.debug { "GET /api/v6/users -- in loop with current user = #{user.to_s} :: user.id = #{user.id}, user.name = #{user.name}" }
           response_json[:body] << { :id => user.id, :name => user.name }
         end
         logger.debug "In API_v6#:users#get --> response_json = \"#{response_json.to_json}\" = \"#{response_json.to_s}\""
@@ -38,27 +38,28 @@ module Acme
           logger.debug { "GET /api/v6/users -- in loop with current user = #{user.to_s}, limit = #{response_limit}" }
           response_json[:body] << { :id => user.id, :name => user.name }
         end
-        logger.debug "In API_v6#:users#get --> response_json = \"#{response_json.to_json}\" = \"#{response_json.to_s}\""
+        logger.debug "In API_v6#:users#get/limit/:limit --> response_json = \"#{response_json.to_json}\" = \"#{response_json.to_s}\""
         response_json.to_json
       end
-
-
-      # POST /api/v6/users { name = ... }
+    end
+    
+    resource :user do
+      # POST /api/v6/user/new { name = ... }
       desc 'Create a new user'
       params do
         requires :name, type: String, regexp: /^[A-Z][a-zA-Z'\-]+$/, desc: 'A user\'s name'
       end
-      post do
-        logger.debug { "POST /api/v6/users with ?name=#{params[:name]}: attempting User.create(...)" }
-        logger.debug { "User.connected? = #{if User.connected? then 'true' else 'false' end}" }
-        logger.debug { "User.configurations = #{User.configurations}" }
+      post 'new' do
+        # logger.debug { "POST /api/v6/users with ?name=#{params[:name]}: attempting User.create(...)" }
+        # logger.debug { "User.connected? = #{if User.connected? then 'true' else 'false' end}" }
+        # logger.debug { "User.configurations = #{User.configurations}" }
         @user = User.create(:name => params[:name])
-        logger.debug { "POST /api/v6/users with ?name=#{params[:name]}: resulting @user=#{@user.to_s}" }
-        logger.debug { "POST /api/v6/users with ?name=#{params[:name]}: returning #{{ :id => @user.id, :name => @user.name, :status => 'created'}.to_json}" }
+        # logger.debug { "POST /api/v6/users with ?name=#{params[:name]}: resulting @user=#{@user.to_s}" }
+        # logger.debug { "POST /api/v6/users with ?name=#{params[:name]}: returning #{{ :id => @user.id, :name => @user.name, :status => 'created'}.to_json}" }
         { :id => @user.id, :name => @user.name, :status => 'created'}
       end
 
-      # GET /api/v6/users/:id
+      # GET /api/v6/user/:id
       desc 'Get an existing user'
       params do
         requires :id, type: Integer, desc: 'A user ID'
@@ -70,7 +71,7 @@ module Acme
         { :id => @user.id, :name => @user.name }
       end
 
-      # DELETE /api/v6/users/:id
+      # DELETE /api/v6/user/:id
       desc 'Delete an existing user'
       params do
         requires :id, type: Integer, desc: 'A user ID'
@@ -80,7 +81,7 @@ module Acme
         { :id => @user.id, :status => 'destroyed'}
       end
 
-      # PUT /api/v6/users/:id { name = ... }
+      # PUT /api/v6/user/:id { name = ... }
       desc 'Update an existing user'
       params do
         requires :id, type: Integer, desc: 'A user ID'
