@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 logger = Logger.new('log/rspec.log', 10, 2048000)
-logger.level = Logger::DEBUG
+logger.level = Logger::WARN # Logger::DEBUG
 
 describe Acme::API do
   include Rack::Test::Methods
@@ -52,30 +52,32 @@ describe Acme::API do
       logger.debug "PUT :id test\nlast_response = #{last_response.to_json}\n$test_id = #{$test_id}"
       last_response.status.should be_in [200, 201, 202]
       _body = JSON.parse(last_response.body)
-      _body.should include Hash.new(:id => @test_id, :name => 'James', :status => 'updated')
+      _body.should include Hash.new(:id => $test_id, :name => 'James', :status => 'updated')
     end
 
     it 'GET users' do
       logger.debug '***** Testing \'GET\' *****'
       get '/api/v6/users'
-      logger.debug "GET test\nlast_response = #{last_response.to_json}\n previous $test_id = #{$test_id}"
+      logger.debug "GET users test \nlast_response = #{last_response.to_json}\n previous $test_id = #{$test_id}"
       last_response.status.should be_in [200, 201, 202]
-      last_response.body[:body].should include({ :id => $test_id, :name => 'James'}.to_json)
+      
+      last_response.body.should include({ :id => $test_id, :name => 'James'}.to_json)
     end
 
     it 'GET users with limit' do
       logger.debug '***** Testing \'GET\' *****'
-      get '/api/v6/users/5'
-      logger.debug "GET test\nlast_response = #{last_response.to_json}\n$test_id = #{$test_id}"
+      get '/api/v6/users/limit/5'
+      logger.debug "GET users limit 5 test \nlast_response = #{last_response.to_json}\n$test_id = #{$test_id}"
       last_response.status.should be_in [200, 201, 202]
-      last_response.body[:body][:body].length.should == 5
+      _body = JSON.parse(last_response.body)
+      _body.length.should <= 5
     end
 
     it 'DELETE users with id' do
       logger.debug '***** Testing \'DELETE with id\' *****'
       delete "/api/v6/user/#{$test_id}"
       logger.debug "DELETE :id test\nlast_response = #{last_response.to_json}\n$test_id = #{@test_id}"
-      last_response.body.should == [{ :id => $test_id, :name => 'James', :status => 'destroyed'}.to_json]
+      last_response.body.should == { :id => $test_id, :status => 'destroyed'}.to_json
     end
 
     logger.debug '***** Leaving context v6 *****'
